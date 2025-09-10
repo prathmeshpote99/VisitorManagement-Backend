@@ -1,4 +1,3 @@
-// controllers/employeeController.js
 import bcrypt from "bcrypt";
 
 export async function createEmployee(req, res) {
@@ -131,19 +130,7 @@ export async function updateEmployee(req, res) {
     const { Employee } = req.tenant;
     const { id } = req.params;
 
-    const {
-      emp_name,
-      emp_email,
-      emp_mobile,
-      emp_countryCode,
-      de_id,
-      emp_address,
-      emp_region,
-      emp_district,
-      emp_status,
-      emp_role,
-      emp_designation,
-    } = req.body;
+    const body = req.body;
 
     const employee = await Employee.findOne({ where: { emp_id: id } });
     if (!employee) {
@@ -153,22 +140,7 @@ export async function updateEmployee(req, res) {
       });
     }
 
-    await Employee.update(
-      {
-        emp_name,
-        emp_email,
-        emp_mobile,
-        emp_countryCode,
-        de_id,
-        emp_address,
-        emp_region,
-        emp_district,
-        emp_status,
-        emp_role,
-        emp_designation,
-      },
-      { where: { emp_id: id } }
-    );
+    await Employee.update(body, { where: { emp_id: id } });
 
     return res.status(200).json({
       message: "Employee updated successfully",
