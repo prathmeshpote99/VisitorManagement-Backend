@@ -70,16 +70,18 @@ export const getAdminById = async (req, res) => {
     if (!admin) {
       return res.status(400).json({
         message: "Admin not found",
+        success: 0
       });
     }
 
     return res.status(200).json({
       message: "Admin fetch successfully",
-      data: admin,
+      record: admin,
+      success: 1
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: err.message });
+    return res.status(500).json({ message: "Internal error", err, success: 0 });
   }
 };
 
@@ -93,18 +95,19 @@ export const updateAdmin = async (req, res) => {
     if (!admin) {
       return res.status(400).json({
         message: "Admin not found",
+        success: 0
       });
     }
 
-    const updateAdmin = await admin.update(req.body);
+    await admin.update(req.body);
 
     return res.status(200).json({
       message: "Admin update successfull",
-      data: updateAdmin,
+      success: 1,
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: err.message });
+    return res.status(500).json({ message: "Internal error", err, success: 0 });
   }
 };
 
@@ -116,16 +119,15 @@ export const deleteAdmin = async (req, res) => {
     });
 
     if (deleteAdmin === 0) {
-      return res.status(400).json({ message: "Admin not found" });
+      return res.status(400).json({ message: "Admin not found", success: 0 });
     }
 
     return res.status(200).json({
       message: "Admin deleted successfully",
+      success: 1
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({
-      err: err.message,
-    });
+    return res.status(500).json({ message: "Internal error", err, success: 0 });
   }
 };
