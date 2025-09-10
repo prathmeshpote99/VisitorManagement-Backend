@@ -39,7 +39,7 @@ export const createAdmin = async (req, res) => {
   }
 };
 
-export const getAdmin = async (req, res) => {
+export const getAllAdmins = async (req, res) => {
   try {
     const admin = await db.Admin.findAll({
       attributes: { exclude: ["ad_password"] },

@@ -1,6 +1,6 @@
 import {
   createAdmin,
-  getAdmin,
+  getAllAdmins,
   getAdminById,
   updateAdmin,
   deleteAdmin,
@@ -10,7 +10,7 @@ import express from "express";
 const router = express();
 
 router.post("/createAdmin", createAdmin);
-router.get("/getAdmin", getAdmin);
+router.get("/getAllAdmins", getAllAdmins);
 router.get("/getAdminById/:id", getAdminById);
 router.patch("/updateAdmin/:id", updateAdmin);
 router.delete("/deleteAdmin/:id", deleteAdmin);
