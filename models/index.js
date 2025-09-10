@@ -23,12 +23,23 @@ db.initTenantModels = (tenantSequelize) => {
   Department.hasMany(Employee, { foreignKey: "de_id" });
   Employee.belongsTo(Department, { foreignKey: "de_id" });
 
-  // Future relations (optional, uncomment when needed)
-  // Employee.hasMany(Visitor, { foreignKey: "emp_id" });
-  // Visitor.belongsTo(Employee, { foreignKey: "emp_id" });
+  Employee.hasMany(Visitor, { foreignKey: "emp_id" }); // An employee may have multiple visitors
+  Visitor.belongsTo(Employee, { foreignKey: "emp_id" });
 
-  // Employee.hasMany(Appointment, { foreignKey: "emp_id" });
-  // Appointment.belongsTo(Employee, { foreignKey: "emp_id" });
+  Employee.hasMany(Appointment, { foreignKey: "ap_bookedBy", as: "bookedAppointments" }); // Who booked
+  Employee.hasMany(Appointment, { foreignKey: "ap_bookedFor", as: "appointmentsForMe" }); // Who is booked for
+  Appointment.belongsTo(Employee, { foreignKey: "ap_bookedBy", as: "bookedBy" });
+  Appointment.belongsTo(Employee, { foreignKey: "ap_bookedFor", as: "bookedFor" });
+
+  Visitor.hasMany(Appointment, { foreignKey: "vi_id" });
+  Appointment.belongsTo(Visitor, { foreignKey: "vi_id" });
+
+  // Optional: For easy reverse lookup from Department → Appointments
+  Department.hasMany(Appointment, {
+    foreignKey: "ap_bookedFor",
+    sourceKey: "de_id",
+    as: "departmentAppointments",
+  });
 
   return {
     Department,
