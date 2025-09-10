@@ -1,8 +1,8 @@
-import { createCompany } from '../controllers/companyController.js'
-import express from 'express'
+import { createCompany } from "../controllers/companyController.js";
+import express from "express";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/createCompany', createCompany)
+router.post("/createCompany", createCompany);
 
-export default router
+export default router;

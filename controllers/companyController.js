@@ -71,7 +71,7 @@ export async function createCompany(req, res) {
       emp_mobile: co_mobile,
       emp_countryCode: co_countryCode,
       emp_status: 2, // Active
-      emp_role: 1,   // HR
+      emp_role: 1, // HR
       emp_designation: "HR Manager",
       de_id: hrDept.de_id,
     });
