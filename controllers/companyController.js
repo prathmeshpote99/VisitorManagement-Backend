@@ -98,3 +98,106 @@ export async function createCompany(req, res) {
         res.status(500).json({ message: "Internal error", err, success: 0 });
     }
 }
+
+export async function getAllCompanies(req, res) {
+    try {
+        const page = parseInt(req.query.page) || 1; // current page
+        const limit = 10; // records per page
+        const offset = (page - 1) * limit;
+
+        // Fetch companies with pagination
+        const { count, rows: companies } = await db.Company.findAndCountAll({
+            order: [["co_id", "ASC"]],
+            limit,
+            offset,
+        });
+
+        return res.status(200).json({
+            message: "Companies fetched successfully",
+            results: companies,
+            total: count,
+            page,
+            totalPages: Math.ceil(count / limit),
+            success: 1,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal error", err, success: 0 });
+    }
+}
+
+export async function getCompanyById(req, res) {
+    try {
+        const { id } = req.params;
+
+        const company = await db.Company.findOne({
+            where: { co_id: id },
+        });
+
+        if (!company) {
+            return res.status(404).json({
+                message: "Company not found",
+                success: 0,
+            });
+        }
+
+        return res.status(200).json({
+            message: "Company fetched successfully",
+            record: company,
+            success: 1,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal error", err, success: 0 });
+    }
+}
+
+export async function updateCompanyStatus(req, res) {
+    try {
+        const { id } = req.params;
+
+        const { co_status } = req.body;
+
+        const company = await db.Company.findOne({ where: { co_id: id } });
+        if (!company) {
+            return res.status(404).json({
+                message: "Company not found",
+                success: 0,
+            });
+        }
+
+        await db.Company.update({ co_status }, { where: { co_id: id } });
+
+        return res.status(200).json({
+            message: "Company status updated",
+            success: 1,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal error", err, success: 0 });
+    }
+}
+
+export async function deleteCompany(req, res) {
+    try {
+        const { id } = req.params;
+
+        const company = await db.Company.findOne({ where: { co_id: id } });
+        if (!company) {
+            return res.status(404).json({
+                message: "Company not found",
+                success: 0,
+            });
+        }
+
+        await db.Company.destroy({ where: { co_id: id } });
+
+        return res.status(200).json({
+            message: "Company deleted successfully",
+            success: 1,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal error", err, success: 0 });
+    }
+}
