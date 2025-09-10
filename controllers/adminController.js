@@ -3,13 +3,18 @@ import bcrypt from "bcrypt";
 
 export const createAdmin = async (req, res) => {
   try {
-    const { ad_name, ad_email, ad_countryCode, ad_mobile, ad_address } =
-      req.body;
+    const {
+      ad_name,
+      ad_email,
+      ad_countryCode,
+      ad_mobile,
+      ad_address
+    } = req.body;
 
     if (!ad_email || !ad_mobile) {
       return res
         .status(400)
-        .json({ message: "Email and Mobile are requiresd" });
+        .json({ message: "Email and Mobile are required", success: 0 });
     }
 
     // Generate default password
@@ -27,15 +32,14 @@ export const createAdmin = async (req, res) => {
       ad_address,
     });
 
-    const { ad_password, ...adminData } = admin.toJSON();
-
     return res.status(200).json({
       message: "Admin created successfully",
-      admin: adminData,
+      data: admin,
+      success: 1
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: err.message });
+    return res.status(500).json({ message: "Internal error", err, success: 0 });
   }
 };
 
@@ -47,11 +51,12 @@ export const getAllAdmins = async (req, res) => {
 
     return res.status(200).json({
       message: "Admin fetch successfully",
-      admin,
+      results: admin,
+      success: 1
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: err.message });
+    return res.status(500).json({ message: "Internal error", err, success: 0 });
   }
 };
 
