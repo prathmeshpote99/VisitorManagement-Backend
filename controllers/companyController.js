@@ -78,21 +78,23 @@ export async function createCompany(req, res) {
 
         console.log(`✅ Tenant DB created & seeded for ${co_name}`);
 
-        res.json({
+        return res.json({
             message: "Company created successfully",
-            company,
-            defaultDepartment: hrDept,
-            defaultEmployee: {
-                emp_id: hrEmployee.emp_id,
-                emp_name: hrEmployee.emp_name,
-                emp_email: hrEmployee.emp_email,
-                emp_role: hrEmployee.emp_role,
-                emp_designation: hrEmployee.emp_designation,
-                defaultPassword, // send plain password once (not stored)
+            data: {
+                company,
+                hrDept,
+                defaultEmployee: {
+                    emp_id: hrEmployee.emp_id,
+                    emp_name: hrEmployee.emp_name,
+                    emp_email: hrEmployee.emp_email,
+                    emp_role: hrEmployee.emp_role,
+                    emp_designation: hrEmployee.emp_designation,
+                }
             },
+            success: 1
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: "Internal error", err, success: 0 });
     }
 }
