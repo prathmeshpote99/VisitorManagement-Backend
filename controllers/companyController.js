@@ -160,11 +160,11 @@ export async function getCompanyById(req, res) {
     }
 }
 
-export async function updateCompanyStatus(req, res) {
+export async function updateCompany(req, res) {
     try {
         const { id } = req.params;
 
-        const { co_status } = req.body;
+        const body = req.body;
 
         const company = await db.Company.findOne({ where: { co_id: id } });
         if (!company) {
@@ -174,10 +174,10 @@ export async function updateCompanyStatus(req, res) {
             });
         }
 
-        await db.Company.update({ co_status }, { where: { co_id: id } });
+        await db.Company.update(body, { where: { co_id: id } });
 
         return res.status(200).json({
-            message: "Company status updated",
+            message: "Company updated successfully",
             success: 1,
         });
     } catch (err) {
