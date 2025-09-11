@@ -7,7 +7,7 @@ import {
 } from "../controllers/adminController.js";
 import express from "express";
 
-const router = express();
+const router = express.Router();
 
 router.post("/createAdmin", createAdmin);
 router.get("/getAllAdmins", getAllAdmins);
