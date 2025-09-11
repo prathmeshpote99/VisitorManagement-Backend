@@ -5,7 +5,7 @@ import masterSequelize from "../config/db.js";
 
 export async function createCompany(req, res) {
     const {
-        co_name,
+        co_title,
         co_subdomain,
         co_email,
         co_mobile,
@@ -13,6 +13,10 @@ export async function createCompany(req, res) {
         co_hrName,
         co_countryCode,
         co_logo,
+        co_hrEmail,
+        co_smtpEmail,
+        co_smtpPassword,
+        co_smtpHost
     } = req.body;
 
     try {
@@ -23,7 +27,7 @@ export async function createCompany(req, res) {
 
         // 2. Save company info in master DB
         const company = await db.Company.create({
-            co_name,
+            co_title,
             co_subdomain,
             co_database: dbName,
             co_email,
@@ -33,6 +37,10 @@ export async function createCompany(req, res) {
             co_countryCode,
             co_logo,
             co_status: 2,
+            co_hrEmail,
+            co_smtpEmail,
+            co_smtpPassword,
+            co_smtpHost
         });
 
         // 3. Connect to new tenant DB
@@ -66,7 +74,7 @@ export async function createCompany(req, res) {
         // 8. Insert default HR employee
         const hrEmployee = await Employee.create({
             emp_name: co_hrName,
-            emp_email: co_email,
+            emp_email: co_hrEmail,
             emp_password: hashedPassword,
             emp_mobile: co_mobile,
             emp_countryCode: co_countryCode,
@@ -76,7 +84,7 @@ export async function createCompany(req, res) {
             de_id: hrDept.de_id,
         });
 
-        console.log(`✅ Tenant DB created & seeded for ${co_name}`);
+        console.log(`✅ Tenant DB created & seeded for ${co_title}`);
 
         return res.json({
             message: "Company created successfully",
