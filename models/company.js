@@ -9,7 +9,7 @@ const CompanyModel = (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      co_name: {
+      co_title: {
         type: DataTypes.STRING,
       },
       co_subdomain: {
@@ -19,7 +19,10 @@ const CompanyModel = (sequelize) => {
       co_database: {
         type: DataTypes.STRING,
       },
-      co_email: {
+      co_logo: {
+        type: DataTypes.STRING,
+      },
+      co_countryCode: {
         type: DataTypes.STRING,
       },
       co_mobile: {
@@ -28,18 +31,24 @@ const CompanyModel = (sequelize) => {
       co_address: {
         type: DataTypes.STRING,
       },
-      co_hrName: {
-        type: DataTypes.STRING,
-      },
-      co_countryCode: {
-        type: DataTypes.STRING,
-      },
-      co_logo: {
-        type: DataTypes.STRING,
-      },
       //1:Inactive, 2:Active, 3:Blocked
       co_status: {
         type: DataTypes.SMALLINT,
+      },
+      co_smtpHost: {
+        type: DataTypes.STRING,
+      },
+      co_smtpPassword: {
+        type: DataTypes.STRING,
+      },
+      co_smtpEmail: {
+        type: DataTypes.STRING,
+      },
+      co_hrName: {
+        type: DataTypes.STRING,
+      },
+      co_hrEmail: {
+        type: DataTypes.STRING,
       },
     },
     {

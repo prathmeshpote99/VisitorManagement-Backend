@@ -15,19 +15,10 @@ const VisitorModel = (sequelize) => {
       vi_email: {
         type: DataTypes.STRING,
       },
-      vi_password: {
-        type: DataTypes.STRING,
-      },
       vi_countryCode: {
         type: DataTypes.STRING,
       },
-      vi_address: {
-        type: DataTypes.STRING,
-      },
-      vi_region: {
-        type: DataTypes.STRING,
-      },
-      vi_district: {
+      vi_mobile: {
         type: DataTypes.STRING,
       },
       //1:Inactive, 2:Active, 3:Blocked
@@ -40,58 +31,14 @@ const VisitorModel = (sequelize) => {
       vi_nationalId: {
         type: DataTypes.STRING,
       },
-      vi_type: {
-        type: DataTypes.SMALLINT,
-      },
-      vi_visitReason: {
+      vi_visitingCard: {
         type: DataTypes.STRING,
       },
-      vi_card: {
+      vi_profilePic: {
         type: DataTypes.STRING,
       },
-      vi_company: {
+      vi_companyFrom: {
         type: DataTypes.STRING,
-      },
-      vi_officerDepartment: {
-        type: DataTypes.STRING,
-      },
-      vi_officerName: {
-        type: DataTypes.STRING,
-      },
-      //1:Yes, 2:No
-      vi_delivery: {
-        type: DataTypes.SMALLINT,
-      },
-      vi_deliveryType: {
-        type: DataTypes.STRING,
-      },
-      vi_deliveryDetails: {
-        type: DataTypes.STRING,
-      },
-      //1:Yes, 2:No
-      vi_asset: {
-        type: DataTypes.SMALLINT,
-      },
-      vi_assetType: {
-        type: DataTypes.STRING,
-      },
-      vi_checkIn: {
-        type: DataTypes.STRING,
-      },
-      vi_checkOut: {
-        type: DataTypes.STRING,
-      },
-      vi_photo: {
-        type: DataTypes.STRING,
-      },
-      emp_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "vms_employee",
-          key: "emp_id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
     },
     {

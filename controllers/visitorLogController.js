@@ -1,13 +1,13 @@
 export async function createAppointment(req, res) {
     try {
-        const { Appointment } = req.tenant;
+        const { VisitorLog } = req.tenant;
         const body = req.body;
 
-        const appointment = await Appointment.create(body);
+        const log = await VisitorLog.create(body);
 
         return res.status(200).json({
-            message: "Appointment created successfully",
-            data: appointment,
+            message: "VisitorLog created successfully",
+            data: log,
             success: 1,
         });
     } catch (err) {
@@ -18,35 +18,36 @@ export async function createAppointment(req, res) {
 
 export async function getAllAppointments(req, res) {
     try {
-        const { Appointment, Employee, Visitor } = req.tenant;
+        const { VisitorLog, Employee, Visitor, Department } = req.tenant;
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
         const offset = (page - 1) * limit;
 
-        const { status, type, bookedBy, bookedFor } = req.query;
+        const { status, type, bookedBy, officer } = req.query;
 
         // Build filters dynamically
         const where = {};
-        if (status) where.ap_status = status;
-        if (type) where.ap_type = type;
-        if (bookedBy) where.ap_bookedBy = bookedBy;
-        if (bookedFor) where.ap_bookedFor = bookedFor;
+        if (status) where.vl_status = status;
+        if (type) where.vl_type = type;
+        if (bookedBy) where.vl_bookedBy = bookedBy;
+        if (officer) where.emp_id = officer;
 
-        const { count, rows: appointments } = await Appointment.findAndCountAll({
+        const { count, rows: logs } = await VisitorLog.findAndCountAll({
             where,
             include: [
                 { model: Employee, as: "bookedBy", attributes: ["emp_id", "emp_name", "emp_email"] },
-                { model: Employee, as: "bookedFor", attributes: ["emp_id", "emp_name", "emp_email"] },
+                { model: Employee, as: "officer", attributes: ["emp_id", "emp_name", "emp_email"] },
                 { model: Visitor, attributes: ["vi_id", "vi_name", "vi_email"] },
+                { model: Department, as: "department", attributes: ["de_id", "de_title"] },
             ],
-            order: [["ap_id", "ASC"]],
+            order: [["vl_id", "ASC"]],
             limit,
             offset,
         });
 
         return res.status(200).json({
-            message: "Appointments fetched successfully",
-            results: appointments,
+            message: "VisitorLogs fetched successfully",
+            results: logs,
             total: count,
             page,
             totalPages: Math.ceil(count / limit),
@@ -60,28 +61,29 @@ export async function getAllAppointments(req, res) {
 
 export async function getAppointmentById(req, res) {
     try {
-        const { Appointment, Employee, Visitor } = req.tenant;
+        const { VisitorLog, Employee, Visitor, Department } = req.tenant;
         const { id } = req.params;
 
-        const appointment = await Appointment.findOne({
-            where: { ap_id: id },
+        const log = await VisitorLog.findOne({
+            where: { vl_id: id },
             include: [
                 { model: Employee, as: "bookedBy", attributes: ["emp_id", "emp_name", "emp_email"] },
-                { model: Employee, as: "bookedFor", attributes: ["emp_id", "emp_name", "emp_email"] },
+                { model: Employee, as: "officer", attributes: ["emp_id", "emp_name", "emp_email"] },
                 { model: Visitor, attributes: ["vi_id", "vi_name", "vi_email"] },
+                { model: Department, as: "department", attributes: ["de_id", "de_title"] },
             ],
         });
 
-        if (!appointment) {
+        if (!log) {
             return res.status(404).json({
-                message: "Appointment not found",
+                message: "VisitorLog not found",
                 success: 0,
             });
         }
 
         return res.status(200).json({
-            message: "Appointment fetched successfully",
-            record: appointment,
+            message: "VisitorLog fetched successfully",
+            record: log,
             success: 1,
         });
     } catch (err) {
@@ -92,26 +94,26 @@ export async function getAppointmentById(req, res) {
 
 export async function updateAppointment(req, res) {
     try {
-        const { Appointment } = req.tenant;
+        const { VisitorLog } = req.tenant;
         const { id } = req.params;
 
         const body = req.body;
 
-        const appointment = await Appointment.findOne({ where: { ap_id: id } });
-        if (!appointment) {
+        const log = await VisitorLog.findOne({ where: { vl_id: id } });
+        if (!log) {
             return res.status(404).json({
-                message: "Appointment not found",
+                message: "VisitorLog not found",
                 success: 0,
             });
         }
 
-        await Appointment.update(body, { where: { ap_id: id } });
+        await VisitorLog.update(body, { where: { vl_id: id } });
 
-        const updatedAppointment = await Appointment.findOne({ where: { ap_id: id } });
+        const updatedLog = await VisitorLog.findOne({ where: { vl_id: id } });
 
         return res.status(200).json({
-            message: "Appointment updated successfully",
-            result: updatedAppointment,
+            message: "VisitorLog updated successfully",
+            result: updatedLog,
             success: 1,
         });
     } catch (err) {
@@ -122,21 +124,21 @@ export async function updateAppointment(req, res) {
 
 export async function deleteAppointment(req, res) {
     try {
-        const { Appointment } = req.tenant;
+        const { VisitorLog } = req.tenant;
         const { id } = req.params;
 
-        const appointment = await Appointment.findOne({ where: { ap_id: id } });
-        if (!appointment) {
+        const log = await VisitorLog.findOne({ where: { vl_id: id } });
+        if (!log) {
             return res.status(404).json({
-                message: "Appointment not found",
+                message: "VisitorLog not found",
                 success: 0,
             });
         }
 
-        await Appointment.destroy({ where: { ap_id: id } });
+        await VisitorLog.destroy({ where: { vl_id: id } });
 
         return res.status(200).json({
-            message: "Appointment deleted successfully",
+            message: "VisitorLog deleted successfully",
             success: 1,
         });
     } catch (err) {

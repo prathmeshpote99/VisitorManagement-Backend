@@ -2,6 +2,7 @@ export async function createVisitor(req, res) {
     try {
         const { Visitor } = req.tenant;
         const body = req.body;
+        const { vi_name, vi_email } = body;
 
         if (!vi_name || !vi_email) {
             return res.status(400).json({ message: "Name and email are required", success: 0 });
@@ -22,7 +23,7 @@ export async function createVisitor(req, res) {
 
 export async function getAllVisitors(req, res) {
     try {
-        const { Visitor, Appointment, Employee } = req.tenant;
+        const { Visitor, VisitorLog, Employee } = req.tenant;
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
         const offset = (page - 1) * limit;
@@ -35,8 +36,8 @@ export async function getAllVisitors(req, res) {
                     attributes: ["emp_id", "emp_name", "emp_email"],
                 },
                 {
-                    model: Appointment,
-                    as: "appointments",
+                    model: VisitorLog,
+                    as: "visitorLogs",   // update alias as per association
                     include: [
                         { model: Employee, as: "bookedBy", attributes: ["emp_id", "emp_name", "emp_email"] },
                         { model: Employee, as: "bookedFor", attributes: ["emp_id", "emp_name", "emp_email"] },
@@ -64,7 +65,7 @@ export async function getAllVisitors(req, res) {
 
 export async function getVisitorById(req, res) {
     try {
-        const { Visitor, Appointment, Employee } = req.tenant;
+        const { Visitor, VisitorLog, Employee } = req.tenant;
         const { id } = req.params;
 
         const visitor = await Visitor.findByPk(id, {
@@ -75,8 +76,8 @@ export async function getVisitorById(req, res) {
                     attributes: ["emp_id", "emp_name", "emp_email"],
                 },
                 {
-                    model: Appointment,
-                    as: "appointments",
+                    model: VisitorLog,
+                    as: "visitorLogs",   // update alias as per association
                     include: [
                         { model: Employee, as: "bookedBy", attributes: ["emp_id", "emp_name", "emp_email"] },
                         { model: Employee, as: "bookedFor", attributes: ["emp_id", "emp_name", "emp_email"] },

@@ -9,6 +9,15 @@ const EmployeeModel = (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      de_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "vms_department",
+          key: "de_id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       emp_name: {
         type: DataTypes.STRING,
       },
@@ -24,15 +33,6 @@ const EmployeeModel = (sequelize) => {
       emp_mobile: {
         type: DataTypes.STRING,
       },
-      emp_address: {
-        type: DataTypes.STRING,
-      },
-      emp_region: {
-        type: DataTypes.STRING,
-      },
-      emp_district: {
-        type: DataTypes.STRING,
-      },
       //1:Inactive, 2:Active, 3:Blocked
       emp_status: {
         type: DataTypes.SMALLINT,
@@ -43,15 +43,6 @@ const EmployeeModel = (sequelize) => {
       },
       emp_designation: {
         type: DataTypes.STRING,
-      },
-      de_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "vms_department",
-          key: "de_id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
     },
     {

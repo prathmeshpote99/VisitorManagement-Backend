@@ -2,7 +2,7 @@ import express from "express";
 import adminRouter from "./adminRoute.js";
 import companyRouter from "./companyRoute.js";
 import employeeRouter from "./employeeRoute.js";
-import appointmentRoute from "./appointmentRoute.js";
+import appointmentRoute from "./visitorLogRoute.js";
 import visitorRoute from "./visitorRoute.js";
 
 const router = express.Router();

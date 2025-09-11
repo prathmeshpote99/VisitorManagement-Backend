@@ -7,7 +7,7 @@ import {
     getAppointmentById,
     updateAppointment,
     deleteAppointment
-} from "../controllers/appointmentController.js";
+} from "../controllers/visitorLogController.js";
 
 const router = express.Router();
 

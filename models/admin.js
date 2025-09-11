@@ -12,21 +12,18 @@ const AdminModel = (sequelize) => {
       ad_name: {
         type: DataTypes.STRING,
       },
-      ad_password: {
-        type: DataTypes.STRING,
-      },
       ad_email: {
         type: DataTypes.STRING,
       },
-      ad_mobile: {
-        type: DataTypes.STRING,
-      },
-      ad_address: {
+      ad_password: {
         type: DataTypes.STRING,
       },
       ad_countryCode: {
         type: DataTypes.STRING,
       },
+      ad_mobile: {
+        type: DataTypes.STRING,
+      }
     },
     {
       tableName: "md_admin",

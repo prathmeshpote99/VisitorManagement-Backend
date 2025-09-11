@@ -4,7 +4,7 @@ import CompanyModel from "./company.js";
 import DepartmentModel from "./department.js";
 import EmployeeModel from "./employee.js";
 import VisitorModel from "./visitor.js";
-import AppointmentModel from "./appointment.js";
+import VisitorLogModel from "./visitorLog.js";
 
 const db = {};
 
@@ -17,35 +17,44 @@ db.initTenantModels = (tenantSequelize) => {
   const Department = DepartmentModel(tenantSequelize);
   const Employee = EmployeeModel(tenantSequelize);
   const Visitor = VisitorModel(tenantSequelize);
-  const Appointment = AppointmentModel(tenantSequelize);
+  const VisitorLog = VisitorLogModel(tenantSequelize);
 
   // 🔑 Associations
+  // Department ↔ Employee
   Department.hasMany(Employee, { foreignKey: "de_id" });
   Employee.belongsTo(Department, { foreignKey: "de_id" });
 
-  Employee.hasMany(Visitor, { foreignKey: "emp_id" }); // An employee may have multiple visitors
-  Visitor.belongsTo(Employee, { foreignKey: "emp_id" });
-
-  Employee.hasMany(Appointment, { foreignKey: "ap_bookedBy", as: "bookedAppointments" }); // Who booked
-  Employee.hasMany(Appointment, { foreignKey: "ap_bookedFor", as: "appointmentsForMe" }); // Who is booked for
-  Appointment.belongsTo(Employee, { foreignKey: "ap_bookedBy", as: "bookedBy" });
-  Appointment.belongsTo(Employee, { foreignKey: "ap_bookedFor", as: "bookedFor" });
-
-  Visitor.hasMany(Appointment, { foreignKey: "vi_id" });
-  Appointment.belongsTo(Visitor, { foreignKey: "vi_id" });
-
-  // Optional: For easy reverse lookup from Department → Appointments
-  Department.hasMany(Appointment, {
-    foreignKey: "ap_bookedFor",
-    sourceKey: "de_id",
-    as: "departmentAppointments",
+  // Department self-association (for hierarchy: department ↔ designation)
+  Department.hasMany(Department, {
+    foreignKey: "de_parentId",
+    as: "subDepartments",   // children
   });
+  Department.belongsTo(Department, {
+    foreignKey: "de_parentId",
+    as: "parentDepartment", // parent
+  });
+
+
+  // Employee ↔ VisitorLog
+  Employee.hasMany(VisitorLog, { foreignKey: "vl_bookedBy", as: "bookedLogs" }); // Executive
+  VisitorLog.belongsTo(Employee, { foreignKey: "vl_bookedBy", as: "bookedBy" });
+
+  Employee.hasMany(VisitorLog, { foreignKey: "emp_id", as: "officerLogs" }); // Officer
+  VisitorLog.belongsTo(Employee, { foreignKey: "emp_id", as: "officer" });
+
+  // Visitor ↔ VisitorLog
+  Visitor.hasMany(VisitorLog, { foreignKey: "vi_id" });
+  VisitorLog.belongsTo(Visitor, { foreignKey: "vi_id" });
+
+  // Department ↔ VisitorLog
+  Department.hasMany(VisitorLog, { foreignKey: "de_id", as: "departmentLogs" });
+  VisitorLog.belongsTo(Department, { foreignKey: "de_id", as: "department" });
 
   return {
     Department,
     Employee,
     Visitor,
-    Appointment,
+    VisitorLog,
     sequelize: tenantSequelize,
   };
 };
