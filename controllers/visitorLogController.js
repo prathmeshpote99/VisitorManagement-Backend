@@ -29,6 +29,12 @@ export async function createAppointment(req, res) {
         log.vl_authCode = authCode;
         await log.save();
 
+        // 🔥 Emit socket event
+        req.app.get("io").emit("appointment:created", {
+            message: "New appointment created",
+            data: log,
+        });
+
         return res.status(200).json({
             message: "VisitorLog created successfully",
             data: log,
