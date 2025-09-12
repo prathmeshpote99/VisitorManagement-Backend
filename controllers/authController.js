@@ -28,8 +28,8 @@ export const login = async (req, res) => {
     }
     if (!user) {
       return res
-        .status(400)
-        .json({ message: "Email doesn't exist", success: 0 });
+        .status(401)
+        .json({ message: "Invalid credentials", success: 0 });
     }
 
     if (userStatus == 2 || userStatus == 3) {
@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     const matchPassword = await compare(password, userPassword);
     if (!matchPassword) {
       return res
-        .status(400)
+        .status(401)
         .json({ message: "Invalid credentials", success: 0 });
     }
     const { ad_password, emp_password, ...safeUser } = user.dataValues;
