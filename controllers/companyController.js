@@ -212,9 +212,17 @@ export async function deleteCompany(req, res) {
             });
         }
 
-        const dbName = company.co_database; // e.g., subdomain_db
+        const dbName = company.co_database;
 
-        // 2. Delete the tenant database
+        // Terminate active connections to tenant DB
+        await masterSequelize.query(`
+      SELECT pg_terminate_backend(pg_stat_activity.pid)
+      FROM pg_stat_activity
+      WHERE pg_stat_activity.datname = '${dbName}'
+        AND pid <> pg_backend_pid();
+    `);
+
+        // Delete the tenant database
         await masterSequelize.query(`DROP DATABASE IF EXISTS "${dbName}"`);
 
         await db.Company.destroy({ where: { co_id: id } });
