@@ -3,13 +3,7 @@ import bcrypt from "bcrypt";
 
 export const createAdmin = async (req, res) => {
   try {
-    const {
-      ad_name,
-      ad_email,
-      ad_countryCode,
-      ad_mobile,
-      ad_address
-    } = req.body;
+    const { ad_name, ad_email, ad_countryCode, ad_mobile } = req.body;
 
     if (!ad_email || !ad_mobile) {
       return res
@@ -29,14 +23,13 @@ export const createAdmin = async (req, res) => {
       ad_password: hashedPassword,
       ad_countryCode,
       ad_mobile,
-      ad_address,
       ad_status: 1,
     });
 
     return res.status(200).json({
       message: "Admin created successfully",
       data: admin,
-      success: 1
+      success: 1,
     });
   } catch (err) {
     console.log(err);
@@ -46,14 +39,24 @@ export const createAdmin = async (req, res) => {
 
 export const getAllAdmins = async (req, res) => {
   try {
-    const admin = await db.Admin.findAll({
+    const page = parseInt(req.query.page) || 1; // current page
+    const limit = 10; // records per page
+    const offset = (page - 1) * limit;
+
+    const { count, rows: admin } = await db.Admin.findAndCountAll({
       attributes: { exclude: ["ad_password"] },
+      order: [["ad_id", "DESC"]],
+      limit,
+      offset,
     });
 
     return res.status(200).json({
-      message: "Admin fetch successfully",
+      message: "Admin fetched successfully",
       results: admin,
-      success: 1
+      total: count,
+      page,
+      totalPages: Math.ceil(count / limit),
+      success: 1,
     });
   } catch (err) {
     console.log(err);
@@ -71,14 +74,14 @@ export const getAdminById = async (req, res) => {
     if (!admin) {
       return res.status(400).json({
         message: "Admin not found",
-        success: 0
+        success: 0,
       });
     }
 
     return res.status(200).json({
       message: "Admin fetch successfully",
       record: admin,
-      success: 1
+      success: 1,
     });
   } catch (err) {
     console.log(err);
@@ -96,7 +99,7 @@ export const updateAdmin = async (req, res) => {
     if (!admin) {
       return res.status(400).json({
         message: "Admin not found",
-        success: 0
+        success: 0,
       });
     }
 
@@ -125,7 +128,7 @@ export const deleteAdmin = async (req, res) => {
 
     return res.status(200).json({
       message: "Admin deleted successfully",
-      success: 1
+      success: 1,
     });
   } catch (err) {
     console.log(err);
