@@ -212,7 +212,14 @@ export async function deleteCompany(req, res) {
             });
         }
 
+        const dbName = company.co_database; // e.g., subdomain_db
+
+        // 2. Delete the tenant database
+        await masterSequelize.query(`DROP DATABASE IF EXISTS "${dbName}"`);
+
         await db.Company.destroy({ where: { co_id: id } });
+
+        console.log(`🗑️ Tenant DB dropped & company deleted: ${company.co_title}`);
 
         return res.status(200).json({
             message: "Company deleted successfully",
