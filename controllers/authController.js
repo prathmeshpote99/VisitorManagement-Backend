@@ -34,7 +34,7 @@ export const login = async (req, res) => {
 
     if (userStatus == 2 || userStatus == 3) {
       return res.status(403).json({
-        message: userStatus == 2 ? "Your account has been temporarily deactivated" : "Your account has been blocked",
+        message: userStatus == 2 ? "Your account has been temporarily inactive, please contact company administrator" : "Your account has been blocked",
         success: 0,
       });
     }
