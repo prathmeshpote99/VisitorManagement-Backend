@@ -24,9 +24,9 @@ export async function createVisitor(req, res) {
 export async function getAllVisitors(req, res) {
     try {
         const { Visitor, VisitorLog, Employee } = req.tenant;
-        const page = parseInt(req.query.page) || 1;
+        const page = parseInt(req.query.page) || null;
         const limit = 10;
-        const offset = (page - 1) * limit;
+        const offset = page ? (page - 1) * limit : null;
 
         const { count, rows: visitors } = await Visitor.findAndCountAll({
             include: [
@@ -45,16 +45,15 @@ export async function getAllVisitors(req, res) {
                 },
             ],
             order: [["vi_id", "ASC"]],
-            limit,
-            offset,
+            ...(page ? { limit, offset } : {})
         });
 
         return res.status(200).json({
             message: "Visitors fetched successfully",
             results: visitors,
             total: count,
-            page,
-            totalPages: Math.ceil(count / limit),
+            page: page || "all",
+            totalPages: page ? Math.ceil(count / limit) : 1,
             success: 1,
         });
     } catch (err) {

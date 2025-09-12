@@ -23,7 +23,11 @@ const AdminModel = (sequelize) => {
       },
       ad_mobile: {
         type: DataTypes.STRING,
-      }
+      },
+      //1:Active, 2:Inactive, 3:Blocked
+      ad_status: {
+        type: DataTypes.SMALLINT,
+      },
     },
     {
       tableName: "md_admin",

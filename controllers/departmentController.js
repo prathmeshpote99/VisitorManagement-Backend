@@ -23,23 +23,28 @@ export const createDepartment = async (req, res) => {
 export const getAllDepartments = async (req, res) => {
   try {
     const { Department, Employee } = req.tenant;
-    const page = parseInt(req.query.page) || 1;
+
+    const page = req.query.page ? parseInt(req.query.page) : null;
     const limit = 10;
-    const offset = (page - 1) * limit;
+    const offset = page ? (page - 1) * limit : null;
+    const type = parseInt(req.query.type) || null;
+
+    let where = {};
+    if (type) where.de_type = type
 
     const { count, rows: department } = await Department.findAndCountAll({
+      where,
       include: [{ model: Employee, attributes: ["emp_name", "emp_email"] }],
       order: [["de_id", "ASC"]],
-      limit,
-      offset,
+      ...(page ? { limit, offset } : {}),
     });
 
     return res.status(200).json({
       message: "Department fetched successfully",
       results: department,
       total: count,
-      page,
-      totalPages: Math.ceil(count / limit),
+      page: page || "all",
+      totalPages: page ? Math.ceil(count / limit) : 1,
       success: 1,
     });
   } catch (err) {

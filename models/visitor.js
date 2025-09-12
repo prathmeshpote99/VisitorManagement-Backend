@@ -21,7 +21,7 @@ const VisitorModel = (sequelize) => {
       vi_mobile: {
         type: DataTypes.STRING,
       },
-      //1:Inactive, 2:Active, 3:Blocked
+      //1:Active, 2:Inactive, 3:Blocked
       vi_status: {
         type: DataTypes.SMALLINT,
       },

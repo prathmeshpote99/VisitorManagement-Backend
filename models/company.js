@@ -31,7 +31,7 @@ const CompanyModel = (sequelize) => {
       co_address: {
         type: DataTypes.STRING,
       },
-      //1:Inactive, 2:Active, 3:Blocked
+      //1:Active, 2:Inactive, 3:Blocked
       co_status: {
         type: DataTypes.SMALLINT,
       },

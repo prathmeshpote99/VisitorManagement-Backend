@@ -33,7 +33,7 @@ const EmployeeModel = (sequelize) => {
       emp_mobile: {
         type: DataTypes.STRING,
       },
-      //1:Inactive, 2:Active, 3:Blocked
+      //1:Active, 2:Inactive, 3:Blocked
       emp_status: {
         type: DataTypes.SMALLINT,
       },
@@ -42,6 +42,9 @@ const EmployeeModel = (sequelize) => {
         type: DataTypes.SMALLINT,
       },
       emp_designation: {
+        type: DataTypes.STRING,
+      },
+      emp_token: {
         type: DataTypes.STRING,
       },
     },

@@ -30,6 +30,7 @@ export const createAdmin = async (req, res) => {
       ad_countryCode,
       ad_mobile,
       ad_address,
+      ad_status: 1,
     });
 
     return res.status(200).json({

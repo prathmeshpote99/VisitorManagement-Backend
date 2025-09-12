@@ -35,7 +35,7 @@ export async function createCompany(req, res) {
             co_hrName,
             co_countryCode,
             co_logo,
-            co_status: 2,
+            co_status: 1,
             co_hrEmail,
             co_smtpEmail,
             co_smtpPassword,
@@ -77,7 +77,7 @@ export async function createCompany(req, res) {
             emp_password: hashedPassword,
             emp_mobile: co_mobile,
             emp_countryCode: co_countryCode,
-            emp_status: 2, // Active
+            emp_status: 1, // Active
             emp_role: 1, // HR
             emp_designation: "HR Manager",
             de_id: hrDept.de_id,

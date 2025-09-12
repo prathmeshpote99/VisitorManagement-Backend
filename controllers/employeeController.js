@@ -27,7 +27,7 @@ export async function createEmployee(req, res) {
       emp_email,
       emp_mobile,
       emp_countryCode,
-      emp_status,
+      emp_status: 1,
       emp_role,
       emp_designation,
       emp_password: hashedPassword,
@@ -66,12 +66,15 @@ export async function createEmployee(req, res) {
 export async function getAllEmployee(req, res) {
   try {
     const { Employee, Department } = req.tenant;
-    const page = parseInt(req.query.page) || 1; // current page
+    const page = parseInt(req.query.page) || null; // current page
     const limit = 10; // records per page
-    const offset = (page - 1) * limit;
-    const role = req.query.role || null
+    const offset = page ? (page - 1) * limit : null;
+    const role = parseInt(req.query.role) || null
+    const de_id = parseInt(req.query.de_id) || null
 
-    const where = role ? { emp_role: role } : null
+    let where = {};
+    if (role) where.role = role
+    if (de_id) where.de_id = de_id
 
     // Fetch employees with pagination
     const { count, rows: employees } = await Employee.findAndCountAll({
@@ -83,16 +86,15 @@ export async function getAllEmployee(req, res) {
         },
       ],
       order: [["emp_id", "ASC"]],
-      limit,
-      offset,
+      ...(page ? { limit, offset } : {})
     });
 
     return res.status(200).json({
       message: "Employees fetched successfully",
       results: employees,
       total: count,
-      page,
-      totalPages: Math.ceil(count / limit),
+      page: page || "all",
+      totalPages: page ? Math.ceil(count / limit) : 1,
       success: 1,
     });
   } catch (err) {

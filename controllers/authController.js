@@ -11,23 +11,34 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     let user;
     let userPassword;
+    let userStatus;
     if (subdomain == "admin") {
       user = await db.Admin.findOne({
         where: { ad_email: email },
       });
       userPassword = user.dataValues.ad_password;
+      userStatus = user.dataValues.ad_status;
     } else {
       const { Employee } = req.tenant;
       user = await Employee.findOne({
         where: { emp_email: email },
       });
       userPassword = user.dataValues.emp_password;
+      userStatus = user.dataValues.emp_status;
     }
     if (!user) {
       return res
         .status(400)
         .json({ message: "Email doesn't exist", success: 0 });
     }
+
+    if (userStatus == 2 || userStatus == 3) {
+      return res.status(403).json({
+        message: userStatus == 2 ? "Your account has been temporarily deactivated" : "Your account has been blocked",
+        success: 0,
+      });
+    }
+
     const matchPassword = await compare(password, userPassword);
     if (!matchPassword) {
       return res
