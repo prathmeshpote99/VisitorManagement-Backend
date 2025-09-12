@@ -1,9 +1,33 @@
+import db from "../models/index.js";
+import { sendAuthCodeEmail } from '../utils/emailService.js'
+
 export async function createAppointment(req, res) {
     try {
-        const { VisitorLog } = req.tenant;
+        const { VisitorLog, Visitor } = req.tenant;
         const body = req.body;
 
         const log = await VisitorLog.create(body);
+
+        // Get subdomain from header and fetch company
+        const subdomain = req.headers["x-tenant"];
+        const company = await db.Company.findOne({ where: { co_subdomain: subdomain } });
+
+        if (!company) {
+            return res.status(400).json({ message: "Company not found", success: 0 });
+        }
+
+        // Get visitor email
+        const visitor = await Visitor.findOne({ where: { vi_id: log.vi_id } });
+        if (!visitor?.vi_email) {
+            return res.status(400).json({ message: "Visitor email not found", success: 0 });
+        }
+
+        // Send Auth Code email
+        const authCode = await sendAuthCodeEmail({ company, to: visitor.vi_email });
+
+        // Save Auth Code in vl_authCode
+        log.vl_authCode = authCode;
+        await log.save();
 
         return res.status(200).json({
             message: "VisitorLog created successfully",

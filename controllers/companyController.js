@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import bcrypt from "bcrypt";
 import db from "../models/index.js";
 import masterSequelize from "../config/db.js";
+import { sendEmail } from '../utils/emailService.js'
 
 export async function createCompany(req, res) {
     const {
@@ -86,8 +87,23 @@ export async function createCompany(req, res) {
 
         console.log(`✅ Tenant DB created & seeded for ${co_title}`);
 
+        const emailSent = await sendEmail({
+            host: process.env.SMTP_HOST,
+            email: process.env.SMTP_EMAIL,
+            password: process.env.SMTP_PASSWORD,
+            fromName: "Visitor Management System Admin",
+            to: co_hrEmail,
+            subject: "Your company account has been created and will be activated within an hour",
+            html: `
+      <p>Hello ${co_hrName},</p>
+      <p>Your company <b>${co_title}</b> has been registered successfully.</p>
+      <p>Login using email: <b>${co_hrEmail}</b> and default password: <b>${defaultPassword}</b></p>
+    `,
+        });
+
         return res.json({
             message: "Company created successfully",
+            emailSent,
             data: {
                 company,
                 hrDept,

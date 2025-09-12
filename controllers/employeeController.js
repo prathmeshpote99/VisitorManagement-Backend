@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import { sendEmail } from '../utils/emailService.js'
+import db from "../models/index.js";
 
 export async function createEmployee(req, res) {
   try {
@@ -32,8 +34,26 @@ export async function createEmployee(req, res) {
       de_id,
     });
 
+    const subdomain = req.headers["x-tenant"];
+    const company = await db.Company.findOne({ where: { co_subdomain: subdomain } });
+
+    const emailSent = await sendEmail({
+      host: company.co_smtpHost,
+      email: company.co_smtpEmail,
+      password: company.co_smtpPassword,
+      fromName: company.co_title,
+      to: emp_email,
+      subject: "Account creation",
+      html: `
+        <p>Hello ${emp_name},</p>
+        <p>Your account has been created</b>.</p>
+        <p>Login using email: <b>${emp_email}</b> and default password: <b>${defaultPassword}</b></p>
+      `,
+    });
+
     return res.status(200).json({
       message: "Employee created",
+      emailSent,
       data: employee,
       success: 1
     });
