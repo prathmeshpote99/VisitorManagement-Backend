@@ -8,7 +8,6 @@ export async function createCompany(req, res) {
     const {
         co_title,
         co_subdomain,
-        co_email,
         co_mobile,
         co_address,
         co_hrName,
@@ -31,7 +30,6 @@ export async function createCompany(req, res) {
             co_title,
             co_subdomain,
             co_database: dbName,
-            co_email,
             co_mobile,
             co_address,
             co_hrName,
@@ -67,7 +65,7 @@ export async function createCompany(req, res) {
         });
 
         // 7. Generate default password
-        const emailPrefix = co_email.split("@")[0];
+        const emailPrefix = co_hrEmail.split("@")[0];
         const mobileSuffix = co_mobile.slice(-3);
         const defaultPassword = `${emailPrefix}@${mobileSuffix}`;
         const hashedPassword = await bcrypt.hash(defaultPassword, 10);
@@ -119,7 +117,7 @@ export async function createCompany(req, res) {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Internal error", err, success: 0 });
+        return res.status(500).json({ message: "Internal error", err, success: 0 });
     }
 }
 

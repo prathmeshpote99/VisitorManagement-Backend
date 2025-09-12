@@ -11,3 +11,13 @@ export function createTransporter({ host, email, password }) {
     },
   });
 }
+
+export function createTransporterForGmail({ host, email, password }) {
+  return nodemailer.createTransport({
+    service: host,
+    auth: {
+      user: email,
+      pass: password,
+    },
+  });
+}

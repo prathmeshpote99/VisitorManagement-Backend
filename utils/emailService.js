@@ -1,5 +1,5 @@
 import QRCode from "qrcode";
-import { createTransporter } from "./emailConfig.js";
+import { createTransporter, createTransporterForGmail } from "./emailConfig.js";
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -54,7 +54,11 @@ export async function sendAuthCodeEmail({ company, to }) {
 
 export async function sendEmail({ host, email, password, fromName, to, subject, html, attachments = [] }) {
     try {
-        const transporter = createTransporter({ host, email, password });
+        const transporter = createTransporterForGmail({ host, email, password });
+
+        console.log("host", host);
+        console.log("email", email);
+        console.log("password", password);
 
         await transporter.sendMail({
             from: `"${fromName}" <${email}>`,
@@ -66,7 +70,7 @@ export async function sendEmail({ host, email, password, fromName, to, subject, 
 
         return true;
     } catch (err) {
-        console.error("sendEmail error:", err.message);
+        console.error("sendEmail error:", err);
         return false; // don’t throw, so controllers don’t break
     }
 }
