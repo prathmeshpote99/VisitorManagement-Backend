@@ -12,12 +12,14 @@ export const login = async (req, res) => {
     let user;
     let userPassword;
     let userStatus;
+    let tokenField;
     if (subdomain == "admin") {
       user = await db.Admin.findOne({
         where: { ad_email: email },
       });
       userPassword = user.dataValues.ad_password;
       userStatus = user.dataValues.ad_status;
+      tokenField = "ad_token";
     } else {
       const { Employee } = req.tenant;
       user = await Employee.findOne({
@@ -25,6 +27,7 @@ export const login = async (req, res) => {
       });
       userPassword = user.dataValues.emp_password;
       userStatus = user.dataValues.emp_status;
+      tokenField = "emp_token";
     }
     if (!user) {
       return res
@@ -50,7 +53,12 @@ export const login = async (req, res) => {
       role: user.dataValues.emp_role ? user.dataValues.emp_role : 0,
       user: safeUser,
     };
-    const token = jwt.sign(payload, JWT_SECRET);
+
+    let token = user.dataValues[tokenField]
+    if (!token) {
+      token = jwt.sign(payload, JWT_SECRET);
+      await user.update({ [tokenField]: token })
+    }
     return res.status(200).json({
       message: "Login successful",
       token,

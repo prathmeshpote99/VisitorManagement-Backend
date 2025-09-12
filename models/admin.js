@@ -28,6 +28,9 @@ const AdminModel = (sequelize) => {
       ad_status: {
         type: DataTypes.SMALLINT,
       },
+      ad_token: {
+        type: DataTypes.STRING,
+      },
     },
     {
       tableName: "md_admin",
